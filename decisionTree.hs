@@ -1,3 +1,5 @@
+module DecisionTree where
+
 import Data.Maybe
 import Control.Monad
 import Control.Applicative
@@ -6,7 +8,7 @@ import Data.Traversable
 data DecisionTree attCat attVal ans =
     Null
   | Leaf {answer :: ans}
-  | Node {question :: attCat, children :: [(attVal, DecisionTree attCat attVal ans)]}  
+  | Node {category :: attCat, children :: [(attVal, DecisionTree attCat attVal ans)]}  
 
 instance (Show c, Show v, Show a) => Show (DecisionTree c v a) where
   show Null              = "Null"
@@ -25,3 +27,18 @@ instance Functor (DecisionTree c v) where
 
 numLeaf :: DecisionTree c v a -> Int
 numLeaf t = foldl (\x _ -> x + 1) 0 t
+
+addChild :: DecisionTree c v a -> (v,DecisionTree c v a) -> DecisionTree c v a
+addChild (Node cat cs) child = Node cat (child:cs)
+
+retrieveChild :: (Eq v) => DecisionTree c v a -> v -> DecisionTree c v a
+retrieveChild (Node cat cs) v = fromJust $ lookup v cs
+
+
+
+
+
+
+
+
+
