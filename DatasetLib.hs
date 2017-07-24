@@ -1,4 +1,4 @@
-module Dataset where
+module DatasetLib where
 
 import Data.List
 import Data.Maybe
@@ -28,3 +28,11 @@ partitionData :: (Eq a, Eq b) => DataSet a b -> a -> [(b,DataSet a b)]
 partitionData ds@(cs,vs) c = map (\val -> (val,(processEntries val))) (catEntries ds c)
   where
     processEntries val = removeCat c (cs,[e | e <- vs, val == (e !! (fromJust $ elemIndex c cs))])
+
+sameResult :: (Eq b) => DataSet a b -> Bool
+sameResult (cs,vs) = and (map (\x -> x!!finalAttIndex == (vs!!0)!!finalAttIndex) vs)
+  where
+    finalAttIndex = (length cs) - 1
+
+resultAtt :: DataSet a b -> b
+resultAtt (cs,vs) = vs!!0!!(length cs - 1)

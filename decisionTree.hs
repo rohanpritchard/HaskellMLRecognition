@@ -13,7 +13,7 @@ data DecisionTree attCat attVal ans =
 instance (Show c, Show v, Show a) => Show (DecisionTree c v a) where
   show Null              = "Null"
   show (Leaf a)          = "Leaf " ++ show a
-  show (Node q cs)       = "Node " ++ show q ++ show (map fst cs)
+  show (Node q cs)       = "Node " ++ show q ++ " " ++ show (map fst cs)
 
 instance Foldable (DecisionTree c v) where 
   foldMap f Null         = mempty
