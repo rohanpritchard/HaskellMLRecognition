@@ -36,3 +36,6 @@ sameResult (cs,vs) = and (map (\x -> x!!finalAttIndex == (vs!!0)!!finalAttIndex)
 
 resultAtt :: DataSet a b -> b
 resultAtt (cs,vs) = vs!!0!!(length cs - 1)
+
+getIndex :: (Eq a) => Header a -> a -> Int
+getIndex hs x = fromJust $ elemIndex x hs
