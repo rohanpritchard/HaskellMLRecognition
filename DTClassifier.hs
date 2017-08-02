@@ -39,18 +39,27 @@ splitByEntropy ds@(cs,vs) = snd $ foldl1 firstOrder catEntropy
     catEntropy = zip (map (informationGain ds) fields) fields
     fields = init cs 
 
+firstOrder :: (Ord a) => (a,b) -> (a,b) -> (a,b)
 firstOrder a@(x1,y1) b@(x2,y2) = if (max x1 x2 == x1) then a else b
 
 predict :: (Eq c, Eq v) => DecisionTree c v v -> (Header c,Value v) -> v
 predict (Leaf x) _           = x
-predict (Node q cs) p@(hs,v) = predict (fromJust (lookup attVal cs)) p
+predict (Node q cs) p@(hs,v)
+  | isNothing child  = childrenVote (map snd cs) p
+  | otherwise        = predict (fromJust child) p
+    where
+      child    = lookup attVal cs
+      catIndex = getIndex hs q
+      attVal   = v !! catIndex
+
+-- If no child node has this attribute value, it seperately lets each child vote on the other attributes.
+childrenVote :: (Eq c, Eq v) => [DecisionTree c v v] -> (Header c, Value v) -> v
+childrenVote ts hv = snd $ foldl1 firstOrder results
   where
-    catIndex = getIndex hs q
-    attVal   = v !! catIndex
+    results = map swap (freqCount $ map (flip predict hv) ts)
 
-
-
-
+swap :: (a,b) -> (b,a)
+swap (x,y) = (y,x)
 
 
 
